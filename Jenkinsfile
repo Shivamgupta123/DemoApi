@@ -62,27 +62,80 @@ stage('Docker Image'){
         echo "Docker Image Step"
         bat "dotnet publish -c Release"
         // bat "docker build -t i_${username}_master --no-cache -f Dockerfile ."
-        bat "docker build -t i_${username}_master --no-cache -f DemoApi/Dockerfile ."
+        bat "docker build -t i_${username}_master:${BUILD_NUMBER} --no-cache -f DemoApi/Dockerfile ."
         // bat "docker build . -t i_${username}_master"
     }
 }
+            
+//             stage('containers'){
+//                 steps{
+//                     parallel(
+//                         "PrecontainerCheck" :{
+//                             environment {
+//                                 containerId="${bat(script: 'docker ps -aqf name=^i_shivamgupta_master$', returnStdout : true).trim().readLiness().drop(1)}"
+//                             }
+//                             when{
+//                                 expression{
+//                                     return containerId !== null
+//                                 }
+//                             }
+//                             steps{
+//                                 echo "stopping running container"
+//                                 bat "docker stop i_${username}_${BRANCH_NAME} && docker rm i_${username}_${BRANCH_NAME}"
+//                             }
+//                         },
+             
 
-stage('Move Image to Docker Hub'){
+// "Move Image to Docker Hub" : {
+//     steps{
+//         echo "Move Image to Docker Hub"
+//          bat "docker tag i_${username}_master ${registry}:${BUILD_NUMBER}"
+//         withDockerRegistry([credentialsId: 'DockerHub', url: '']){
+//             bat "docker push ${registry}:${BUILD_NUMBER}"
+//         }
+//     }
+// }
+//  )
+// }
+stage('Containers'){
     steps{
-        echo "Move Image to Docker Hub"
-         bat "docker tag i_${username}_master ${registry}:${BUILD_NUMBER}"
-        withDockerRegistry([credentialsId: 'DockerHub', url: '']){
-            bat "docker push ${registry}:${BUILD_NUMBER}"
+      parallel(
+        'PreContainer Check':{
+      script{
+        def containerId = "${bat(returnStdout: true,script:'docker ps -aqf name=^i_shivamgupta_master$').trim().readLines().drop(1)}"
+        if(containerId !='[]'){
+           echo "${containerId}"
+          echo "Deleting container if already running"
+          bat "docker stop i_shivamgupta_master && docker rm i_shivamgupta_master"
         }
+      }
+        },
+        'Push to Docker Hub':{
+        script{
+         echo "Move Image to Docker Hub"
+          bat "docker tag i_${username}_master:${BUILD_NUMBER} ${registry}:${BUILD_NUMBER}"
+          bat "docker tag i_${username}_master:${BUILD_NUMBER} ${registry}:latest"
+          withDockerRegistry([credentialsId: 'DockerHub', url: ""]) {
+            bat "docker push ${registry}:${BUILD_NUMBER}"
+            bat "docker push ${registry}:latest"
+          }
+      }
+      })
     }
-}
+          }
 
 stage('Docker Deployent'){
     steps{
         echo "Docker Deployment"
-         bat "docker run --name TestWebApi -d -p 7100:80 ${registry}:${BUILD_NUMBER}"
+        bat "docker run --name i_${username}_master -d -p 7200:80 ${registry}:${BUILD_NUMBER}"
        // bat "docker run --name TestApi -d -p 7100:80 i_${username}_master"
     }
 }
+  stage('Kubernetes Deployment'){
+    steps {
+    echo "Deploying to kubernetes cluster"
+    bat "kubectl apply -f deployment.yaml"
+    }
+  }
  }
 }
