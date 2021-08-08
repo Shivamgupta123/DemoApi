@@ -125,7 +125,7 @@ stage('Containers'){
 stage('Docker Deployent'){
     steps{
         echo "Docker Deployment"
-        bat "docker run --name i_${username}_master -d -p 7100:80 ${registry}:${BUILD_NUMBER}"
+        bat "docker run --name i_${username}_master:${BUILD_NUMBER} -d -p 7100:80 ${registry}:${BUILD_NUMBER}"
        // bat "docker run --name TestApi -d -p 7100:80 i_${username}_master"
     }
 }
