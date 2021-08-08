@@ -5,18 +5,10 @@ pipeline{
 //         scannerHome = tool name: 'sonar_scanner_dotnet'
         dotnet ='C:\\Program Files (x86)\\dotnet\\'
         registry = 'shivamgupta04/samplewebapi'
-        username = 'shivamgupta'
+        username = 'shivamgupta04'
         registryCredential = 'DockerHub' 
         dockerImage = '' 
-        masterAppPort = 7200
-        developAppPort = 7300
-        dockerPort = 7100
-        masterAppName = 'dotnet-app-master-deployment'
-        masterServiceName = 'dotnet-app-master'
-        masterExposedPort = 30157
-        developAppName = 'dotnet-app-develop-deployment'
-        developServiceName = 'dotnet-app-develop'
-        developExposedPort = 30158
+        cname = "c_${username}_develop"
         }
         
         stages{
@@ -67,36 +59,6 @@ stage('Docker Image'){
     }
 }
             
-//             stage('containers'){
-//                 steps{
-//                     parallel(
-//                         "PrecontainerCheck" :{
-//                             environment {
-//                                 containerId="${bat(script: 'docker ps -aqf name=^i_shivamgupta_master$', returnStdout : true).trim().readLiness().drop(1)}"
-//                             }
-//                             when{
-//                                 expression{
-//                                     return containerId !== null
-//                                 }
-//                             }
-//                             steps{
-//                                 echo "stopping running container"
-//                                 bat "docker stop i_${username}_${BRANCH_NAME} && docker rm i_${username}_${BRANCH_NAME}"
-//                             }
-//                         },
-             
-
-// "Move Image to Docker Hub" : {
-//     steps{
-//         echo "Move Image to Docker Hub"
-//          bat "docker tag i_${username}_master ${registry}:${BUILD_NUMBER}"
-//         withDockerRegistry([credentialsId: 'DockerHub', url: '']){
-//             bat "docker push ${registry}:${BUILD_NUMBER}"
-//         }
-//     }
-// }
-//  )
-// }
 stage('Containers'){
     steps{
       parallel(
@@ -106,7 +68,7 @@ stage('Containers'){
         if(containerId !='[]'){
            echo "${containerId}"
           echo "Deleting container if already running"
-          bat "docker stop i_shivamgupta_develop && docker rm i_shivamgupta_develop"
+            bat "docker stop ${cname} && docker rm ${cname}"
         }
       }
         },
@@ -127,7 +89,7 @@ stage('Containers'){
 stage('Docker Deployent'){
     steps{
         echo "Docker Deployment"
-        bat "docker run --name i_${username}_develop -d -p 7300:80 ${registry}:${BUILD_NUMBER}"
+        bat "docker run --name ${cname} -d -p 7300:80 ${registry}:${BUILD_NUMBER}"
        // bat "docker run --name TestApi -d -p 7100:80 i_${username}_master"
     }
 }
