@@ -86,7 +86,7 @@ stage('Docker Image'){
                         }
              
 
-stage('Move Image to Docker Hub'){
+"Move Image to Docker Hub" : {
     steps{
         echo "Move Image to Docker Hub"
          bat "docker tag i_${username}_master ${registry}:${BUILD_NUMBER}"
