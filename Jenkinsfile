@@ -62,7 +62,7 @@ stage('Docker Image'){
         echo "Docker Image Step"
         bat "dotnet publish -c Release"
         // bat "docker build -t i_${username}_master --no-cache -f Dockerfile ."
-        bat "docker build -t i_${username}_master:${BUILD_NUMBER} --no-cache -f DemoApi/Dockerfile ."
+        bat "docker build -t i_${username}_master --no-cache -f DemoApi/Dockerfile ."
         // bat "docker build . -t i_${username}_master"
     }
 }
@@ -125,7 +125,7 @@ stage('Containers'){
 stage('Docker Deployent'){
     steps{
         echo "Docker Deployment"
-        bat "docker run --name i_${username}_master:${BUILD_NUMBER} -d -p 7100:80 ${registry}:${BUILD_NUMBER}"
+        bat "docker run --name i_${username}_master -d -p 7100:80 ${registry}:${BUILD_NUMBER}"
        // bat "docker run --name TestApi -d -p 7100:80 i_${username}_master"
     }
 }
