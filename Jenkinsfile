@@ -62,7 +62,7 @@ stage('Docker Image'){
         echo "Docker Image Step"
         bat "dotnet publish -c Release"
         // bat "docker build -t i_${username}_master --no-cache -f Dockerfile ."
-        bat "docker build -t i_${username}_master:${BUILD_NUMBER} --no-cache -f DemoApi/Dockerfile ."
+        bat "docker build -t i_${username}_develop:${BUILD_NUMBER} --no-cache -f DemoApi/Dockerfile ."
         // bat "docker build . -t i_${username}_master"
     }
 }
@@ -106,15 +106,15 @@ stage('Containers'){
         if(containerId !='[]'){
            echo "${containerId}"
           echo "Deleting container if already running"
-          bat "docker stop i_shivamgupta_master && docker rm i_shivamgupta_master"
+          bat "docker stop i_shivamgupta_develop && docker rm i_shivamgupta_develop"
         }
       }
         },
         'Push to Docker Hub':{
         script{
          echo "Move Image to Docker Hub"
-          bat "docker tag i_${username}_master:${BUILD_NUMBER} ${registry}:${BUILD_NUMBER}"
-          bat "docker tag i_${username}_master:${BUILD_NUMBER} ${registry}:latest"
+          bat "docker tag i_${username}_develop:${BUILD_NUMBER} ${registry}:${BUILD_NUMBER}"
+          bat "docker tag i_${username}_develop:${BUILD_NUMBER} ${registry}:latest"
           withDockerRegistry([credentialsId: 'DockerHub', url: ""]) {
             bat "docker push ${registry}:${BUILD_NUMBER}"
             bat "docker push ${registry}:latest"
@@ -127,7 +127,7 @@ stage('Containers'){
 stage('Docker Deployent'){
     steps{
         echo "Docker Deployment"
-        bat "docker run --name i_${username}_master -d -p 7300:80 ${registry}:${BUILD_NUMBER}"
+        bat "docker run --name i_${username}_develop -d -p 7300:80 ${registry}:${BUILD_NUMBER}"
        // bat "docker run --name TestApi -d -p 7100:80 i_${username}_master"
     }
 }
