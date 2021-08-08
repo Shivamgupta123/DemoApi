@@ -80,8 +80,8 @@ stage('Docker Image'){
                                 }
                             }
                             steps{
-                                echo ""
-                                bat docker stop 
+                                echo "stopping running container"
+                                bat "docker stop i_${username}_${BRANCH_NAME} && docker rm i_${username}_${BRANCH_NAME}"
                             }
                         }
                     )
