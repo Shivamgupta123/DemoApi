@@ -129,6 +129,12 @@ stage('Docker Deployent'){
        // bat "docker run --name TestApi -d -p 7100:80 i_${username}_master"
     }
 }
+  stage('Kubernetes Deployment'){
+    steps {
+    echo "Deploying to kubernetes cluster"
+    bat "kubectl apply -f deployment.yaml"
+    }
+  }
  }
 }
 
