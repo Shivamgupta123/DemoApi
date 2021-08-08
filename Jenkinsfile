@@ -84,8 +84,7 @@ stage('Docker Image'){
                                 bat "docker stop i_${username}_${BRANCH_NAME} && docker rm i_${username}_${BRANCH_NAME}"
                             }
                         }
-                    )
-                }
+             
 
 stage('Move Image to Docker Hub'){
     steps{
@@ -96,6 +95,9 @@ stage('Move Image to Docker Hub'){
         }
     }
 }
+ )
+}
+                
 
 stage('Docker Deployent'){
     steps{
