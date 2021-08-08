@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nagp-deployment
+  namespace: kubernetes-cluster-shivam
+  labels:
+    app: nginx
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: shivamgupta04/samplewebapi:31
+        ports:
+          - name: http
+            containerPort: 80
+            protocol: TCP
+
+---
+apiVersion: "v1"
+kind: "Service"
+metadata:
+  name: nginx-deployment-service
+  namespace: kubernetes-cluster-shivam
+  labels:
+    app: nginx
+spec:
+  type: NodePort
+  selector: 
+    app: nginx
+  ports: 
+  - protocol: "TCP"
+    nodePort: 30158
+    port: 80
+    targetPort: 80
+  selector: 
+    app: nginx
+  type: "LoadBalancer"
