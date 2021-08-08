@@ -62,7 +62,7 @@ stage('Docker Image'){
         echo "Docker Image Step"
         bat "dotnet publish -c Release"
         // bat "docker build -t i_${username}_master --no-cache -f Dockerfile ."
-        bat "docker build -t i_${username}_master --no-cache -f DemoApi/Dockerfile ."
+        bat "docker build -t i_${username}_master:${BUILD_NUMBER} --no-cache -f DemoApi/Dockerfile ."
         // bat "docker build . -t i_${username}_master"
     }
 }
@@ -113,7 +113,7 @@ stage('Containers'){
         'Push to Docker Hub':{
         script{
          echo "Move Image to Docker Hub"
-          bat "docker tag i_${username}_master:${BUILd_NUMBER} ${registry}:${BUILd_NUMBER}"
+          bat "docker tag i_${username}_master:${BUILD_NUMBER} ${registry}:${BUILD_NUMBER}"
           withDockerRegistry([credentialsId: 'DockerHub', url: ""]) {
             bat "docker push ${registry}:${BUILD_NUMBER}"
           }
