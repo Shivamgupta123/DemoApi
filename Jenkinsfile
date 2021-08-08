@@ -64,7 +64,7 @@ stage('Containers'){
       parallel(
         'PreContainer Check':{
       script{
-        def containerId = "${bat(returnStdout: true,script:'docker ps -aqf name=^i_shivamgupta04_develop$').trim().readLines().drop(1)}"
+        def containerId = "${bat(returnStdout: true,script:'docker ps -aqf name=^c_shivamgupta04_develop$').trim().readLines().drop(1)}"
         if(containerId !='[]'){
            echo "${containerId}"
           echo "Deleting container if already running"
