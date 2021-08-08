@@ -66,6 +66,26 @@ stage('Docker Image'){
         // bat "docker build . -t i_${username}_master"
     }
 }
+            
+            stage('containers'){
+                steps{
+                    parallel(
+                        "PrecontainerCheck" :{
+                            environment {
+                                containerId="${bat(script: 'docker ps -aqf name=^i_shivamgupta_master$', returnStdout : true).trim().readLiness().drop(1)}"
+                            }
+                            when{
+                                expression{
+                                    return containerId !== null
+                                }
+                            }
+                            steps{
+                                echo ""
+                                bat docker stop 
+                            }
+                        }
+                    )
+                }
 
 stage('Move Image to Docker Hub'){
     steps{
@@ -80,7 +100,7 @@ stage('Move Image to Docker Hub'){
 stage('Docker Deployent'){
     steps{
         echo "Docker Deployment"
-         bat "docker run --name TestWebApi -d -p 7100:80 ${registry}:${BUILD_NUMBER}"
+        bat "docker run --name i_${username}_${BRANCH_NAME} -d -p 7100:80 ${registry}:${BUILD_NUMBER}"
        // bat "docker run --name TestApi -d -p 7100:80 i_${username}_master"
     }
 }
