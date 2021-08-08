@@ -67,36 +67,36 @@ stage('Docker Image'){
     }
 }
             
-            stage('containers'){
-                steps{
-                    parallel(
-                        "PrecontainerCheck" :{
-                            environment {
-                                containerId="${bat(script: 'docker ps -aqf name=^i_shivamgupta_master$', returnStdout : true).trim().readLiness().drop(1)}"
-                            }
-                            when{
-                                expression{
-                                    return containerId !== null
-                                }
-                            }
-                            steps{
-                                echo "stopping running container"
-                                bat "docker stop i_${username}_${BRANCH_NAME} && docker rm i_${username}_${BRANCH_NAME}"
-                            }
-                        },
+//             stage('containers'){
+//                 steps{
+//                     parallel(
+//                         "PrecontainerCheck" :{
+//                             environment {
+//                                 containerId="${bat(script: 'docker ps -aqf name=^i_shivamgupta_master$', returnStdout : true).trim().readLiness().drop(1)}"
+//                             }
+//                             when{
+//                                 expression{
+//                                     return containerId !== null
+//                                 }
+//                             }
+//                             steps{
+//                                 echo "stopping running container"
+//                                 bat "docker stop i_${username}_${BRANCH_NAME} && docker rm i_${username}_${BRANCH_NAME}"
+//                             }
+//                         },
              
 
-"Move Image to Docker Hub" : {
-    steps{
-        echo "Move Image to Docker Hub"
-         bat "docker tag i_${username}_master ${registry}:${BUILD_NUMBER}"
-        withDockerRegistry([credentialsId: 'DockerHub', url: '']){
-            bat "docker push ${registry}:${BUILD_NUMBER}"
-        }
-    }
-}
- )
-}
+// "Move Image to Docker Hub" : {
+//     steps{
+//         echo "Move Image to Docker Hub"
+//          bat "docker tag i_${username}_master ${registry}:${BUILD_NUMBER}"
+//         withDockerRegistry([credentialsId: 'DockerHub', url: '']){
+//             bat "docker push ${registry}:${BUILD_NUMBER}"
+//         }
+//     }
+// }
+//  )
+// }
 stage('Containers'){
     steps{
       parallel(
