@@ -83,7 +83,7 @@ stage('Docker Image'){
                                 echo "stopping running container"
                                 bat "docker stop i_${username}_${BRANCH_NAME} && docker rm i_${username}_${BRANCH_NAME}"
                             }
-                        }
+                        },
              
 
 "Move Image to Docker Hub" : {
