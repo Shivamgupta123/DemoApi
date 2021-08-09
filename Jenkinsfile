@@ -2,7 +2,7 @@ pipeline{
     agent any
     
     environment {
-         scannerHome = tool name: 'sonar_scanner_dotnet'
+//          scannerHome = tool name: 'sonar_scanner_dotnet'
         dotnet ='C:\\Program Files (x86)\\dotnet\\'
         registry = 'shivamgupta04/samplewebapi'
         username = 'shivamgupta04'
@@ -23,14 +23,14 @@ pipeline{
        bat "dotnet restore"
       }
    }
-stage('Start SonarQube Analysis') { 
-steps {
-echo "Start sonarQube Analysis Step"
-withSonarQubeEnv('Test_Sonar') {
-bat "${scannerHome}\\SonarScanner.MSBuild.exe begin /k:sonar_shivam /n:sonar_shivam /v:1.0"
-}
-}
-}
+// stage('Start SonarQube Analysis') { 
+// steps {
+// echo "Start sonarQube Analysis Step"
+// withSonarQubeEnv('Test_Sonar') {
+// bat "${scannerHome}\\SonarScanner.MSBuild.exe begin /k:sonar_shivam /n:sonar_shivam /v:1.0"
+// }
+// }
+// }
    stage('Code Build'){
    steps{
        echo "Clean previous build"
@@ -41,14 +41,14 @@ bat "${scannerHome}\\SonarScanner.MSBuild.exe begin /k:sonar_shivam /n:sonar_shi
 
      }
   }
- stage("Stop sonarQube Analysis") {
-        steps {
-          echo "Stop sonarQube analysis"
-          withSonarQubeEnv('Test_Sonar') {
-            bat "${scannerHome}\\SonarScanner.MSBuild.exe end"
-          }
-        }
-      }
+//  stage("Stop sonarQube Analysis") {
+//         steps {
+//           echo "Stop sonarQube analysis"
+//           withSonarQubeEnv('Test_Sonar') {
+//             bat "${scannerHome}\\SonarScanner.MSBuild.exe end"
+//           }
+//         }
+//       }
 stage('Docker Image'){
     steps{
         echo "Docker Image Step"
