@@ -2,7 +2,7 @@ pipeline{
     agent any
     
     environment {
-         scannerHome = tool name: 'SonarQubeScanner'
+         scannerHome = tool name: 'sonar_scanner_dotnet'
         dotnet ='C:\\Program Files (x86)\\dotnet\\'
         registry = 'shivamgupta04/samplewebapi'
         username = 'shivamgupta04'
